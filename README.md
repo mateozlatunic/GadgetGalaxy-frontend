@@ -1,7 +1,11 @@
 # Netlify:
 Click to [Launch App](https://moonlit-beignet-8007d5.netlify.app/)
 
+<br>
+
 # Gadget Galaxy
+
+<br>
 
 ## Project setup
 ```
