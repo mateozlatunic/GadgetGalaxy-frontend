@@ -1,4 +1,7 @@
-# gadget-galaxy
+# Netlify:
+Click to [Launch App](https://moonlit-beignet-8007d5.netlify.app/)
+
+# Gadget Galaxy
 
 ## Project setup
 ```
@@ -14,9 +17,6 @@ npm run serve
 ```
 npm run build
 ```
-
-### Netlify App launch
-See [Launch App](https://moonlit-beignet-8007d5.netlify.app/)
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
