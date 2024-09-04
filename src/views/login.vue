@@ -7,27 +7,40 @@
           <div class="card-body">
             <form @submit.prevent="login">
               <div class="form-group">
-                <label for="username">Korisničko ime:</label>
-                <input
-                  type="text"
-                  id="username"
-                  v-model="username"
-                  class="form-control"
+                <v-text-field
+                  v-model="email"
+                  :rules="[rules.email, rules.required]"
+                  label="Email"
+                  type="email"
                   required
-                />
+                ></v-text-field>
               </div>
               <div class="form-group">
-                <label for="password">Lozinka:</label>
-                <input
-                  type="password"
-                  id="password"
+                <v-text-field
                   v-model="password"
-                  class="form-control"
+                  :rules="[rules.required, rules.password]"
+                  label="Lozinka"
+                  type="password"
                   required
-                />
+                ></v-text-field>
               </div>
-              <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Prijavi se</button>
+              <v-btn
+                type="submit"
+                color="primary"
+                class="mt-3"
+                @click="login()"
+              >
+                Prijavi se
+              </v-btn>
             </form>
+            <v-alert
+              v-if="error"
+              type="error"
+              dismissible
+              class="mt-3"
+            >
+              {{ error }}
+            </v-alert>
           </div>
         </div>
       </div>
@@ -36,21 +49,37 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data() {
     return {
-      username: "",
+      email: "",
       password: "",
+      error: null,
+      rules: {
+        email: (v) => !!(v || "").match(/@/) || "Unesi valjan email",
+        password: (v) =>
+          !!(v || "").match(/^(?=.*[a-zA-Z])(?=.*\d).*$/) ||
+          "Lozinka mora sadržavati slova i brojeve",
+        required: (v) => !!v || "Potrebno popuniti polje",
+      },
     };
   },
   methods: {
-    login() {
-      console.log(
-        "Prijava sa korisničkim imenom:",
-        this.username,
-        "i lozinkom:",
-        this.password
-      );
+    async login() {
+      try {
+        const response = await axios.post("/api/auth/login", {
+          email: this.email,
+          password: this.password,
+        });
+        // Spremite token u localStorage ili cookie
+        localStorage.setItem("token", response.data.token);
+        this.$router.push("/welcome");
+      } catch (error) {
+        this.error = "Login failed: " + (error.response?.data?.error || "Unknown error");
+        console.error("Login failed:", this.error);
+      }
     },
   },
 };

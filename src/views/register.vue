@@ -7,49 +7,53 @@
           <div class="card-body">
             <form @submit.prevent="register">
               <div class="form-group">
-                <label for="username">Korisničko ime:</label>
-                <input
-                  type="text"
-                  id="username"
+                <v-text-field
                   v-model="username"
-                  class="form-control"
+                  :rules="[rules.required, rules.username]"
+                  label="Korisničko ime"
                   required
-                />
+                ></v-text-field>
               </div>
               <div class="form-group">
-                <label for="email">Email adresa:</label>
-                <input
-                  type="email"
-                  id="email"
+                <v-text-field
                   v-model="email"
-                  class="form-control"
+                  :rules="[rules.required, rules.email]"
+                  label="Email adresa"
+                  type="email"
                   required
-                />
+                ></v-text-field>
               </div>
               <div class="form-group">
-                <label for="password">Lozinka:</label>
-                <input
-                  type="password"
-                  id="password"
+                <v-text-field
                   v-model="password"
-                  class="form-control"
+                  :rules="[rules.required, rules.password]"
+                  label="Lozinka"
+                  type="password"
                   required
-                />
+                ></v-text-field>
               </div>
               <div class="form-group">
-                <label for="confirmPassword">Potvrdi lozinku:</label>
-                <input
-                  type="password"
-                  id="confirmPassword"
+                <v-text-field
                   v-model="confirmPassword"
-                  class="form-control"
+                  :rules="[rules.required, rules.confirmPassword]"
+                  label="Potvrdi lozinku"
+                  type="password"
                   required
-                />
+                ></v-text-field>
               </div>
-              <button type="submit" class="btn btn-primary" style="margin-top: 10px;">
+              <v-btn
+                type="submit"
+                color="primary"
+                style="margin-top: 10px"
+                @click="register()"
+
+              >
                 Registriraj se
-              </button>
+              </v-btn>
             </form>
+            <v-alert v-if="error" type="error" dismissible class="mt-3">
+              {{ error }}
+            </v-alert>
           </div>
         </div>
       </div>
@@ -58,6 +62,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data() {
     return {
@@ -65,36 +71,48 @@ export default {
       email: "",
       password: "",
       confirmPassword: "",
+      error: null,
+      rules: {
+        required: (v) => !!v || "Ovo polje je obavezno.",
+        email: (v) => /.+@.+\..+/.test(v) || "Unesite ispravnu email adresu.",
+        password: (v) =>
+          /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(v) ||
+          "Lozinka mora imati najmanje 8 znakova i sadržavati slova i brojeve.",
+        confirmPassword: (v) =>
+          v === this.password || "Lozinke se ne podudaraju.",
+        username: (v) =>
+          (v && v.length >= 3) || "Korisničko ime mora imati najmanje 3 znaka.",
+      },
     };
   },
   methods: {
-    register() {
-      if (
-        !this.username ||
-        !this.email ||
-        !this.password ||
-        !this.confirmPassword
-      ) {
-        alert("Sva polja moraju biti popunjena.");
-        return;
-      }
+    async register() {
+    try {
+      console.log('Podaci registracije:');
+      console.log('Username: ', this.username);
+      console.log('Email: ', this.email);
+      console.log('Password:', this.password);
 
-      if (this.password !== this.confirmPassword) {
-        alert("Lozinka i potvrda lozinke se ne podudaraju.");
-        return;
-      }
+      const response = await axios.post('http://localhost:50000/register', {
+        username: this.username,
+        email: this.email,
+        password: this.password
+      });
 
-      console.log(
-        "Registracija sa korisničkim imenom:",
-        this.username,
-        "emailom:",
-        this.email,
-        "i lozinkom:",
-        this.password
-      );
-    },
+      console.log('Backend response:', response.data);
+
+      } catch (error) {
+        console.error('Error during login:', error.message);
+      }
+    }
   },
 };
 </script>
 
 <style scoped></style>
+
+
+
+
+
+

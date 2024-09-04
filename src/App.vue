@@ -23,7 +23,12 @@ export default {
   name: "App",
 
   data: () => ({
-    //
+    
   }),
+  methods: {
+    navigateTo(route) {
+      this.$router.push({ path: `/${route}` });
+    }
+  }
 };
 </script>
