@@ -5,7 +5,7 @@
         <div class="card">
           <div class="card-header">Registracija</div>
           <div class="card-body">
-            <form @submit.prevent="register">
+            <form @submit.prevent="registerUser">
               <div class="form-group">
                 <v-text-field
                   v-model="username"
@@ -45,8 +45,7 @@
                 type="submit"
                 color="primary"
                 style="margin-top: 10px"
-                @click="register()"
-
+                @click="registerUser()"
               >
                 Registriraj se
               </v-btn>
@@ -86,33 +85,31 @@ export default {
     };
   },
   methods: {
-    async register() {
-    try {
-      console.log('Podaci registracije:');
-      console.log('Username: ', this.username);
-      console.log('Email: ', this.email);
-      console.log('Password:', this.password);
-
-      const response = await axios.post('http://localhost:50000/register', {
+    async registerUser() {
+      const userData = {
         username: this.username,
         email: this.email,
-        password: this.password
-      });
+        password: this.password,
+      };
 
-      console.log('Backend response:', response.data);
+      try {
+        const response = await axios.post(
+          "http://localhost:50000/register",
+          userData
+        );
+        console.log("Odgovor sa servera:", response.data);
 
+        const token = response.data.token;
+        localStorage.setItem("token", token); // Spremanje tokena
+        if (this.$route.name !== "welcome") {
+          this.$router.push({ name: "welcome" }); 
+        }
       } catch (error) {
-        console.error('Error during login:', error.message);
+        console.error("Greška prilikom registracije:", error.response.data);
       }
-    }
+    },
   },
 };
 </script>
 
 <style scoped></style>
-
-
-
-
-
-

@@ -33,12 +33,7 @@
                 Prijavi se
               </v-btn>
             </form>
-            <v-alert
-              v-if="error"
-              type="error"
-              dismissible
-              class="mt-3"
-            >
+            <v-alert v-if="error" type="error" dismissible class="mt-3">
               {{ error }}
             </v-alert>
           </div>
@@ -69,16 +64,39 @@ export default {
   methods: {
     async login() {
       try {
-        const response = await axios.post("/api/auth/login", {
+        // Ispisivanje podataka koji se šalju
+        console.log("Šaljem podatke za prijavu:", {
           email: this.email,
           password: this.password,
         });
-        // Spremite token u localStorage ili cookie
-        localStorage.setItem("token", response.data.token);
-        this.$router.push("/welcome");
+
+        const response = await axios.get("http://localhost:50000/login", {
+          params: {
+            email: this.email,
+            password: this.password,
+          },
+        });
+
+        console.log("Odgovor servera:", response.data);
+
+        // Spremanje tokena u localStorage
+        const token = response.data.token;
+        localStorage.setItem("token", token);
+
+        console.log("Token spremljen u localStorage:", response.data.token);
+
+        if (this.$route.name !== "welcome") {
+          this.$router.push({ name: "welcome" }); 
+        }
       } catch (error) {
-        this.error = "Login failed: " + (error.response?.data?.error || "Unknown error");
-        console.error("Login failed:", this.error);
+        console.error(
+          "Greška pri prijavi:",
+          error.response?.data || "Unknown error"
+        );
+
+        // Prikazivanje greške korisniku
+        this.error =
+          "Login failed: " + (error.response?.data || "Unknown error");
       }
     },
   },
