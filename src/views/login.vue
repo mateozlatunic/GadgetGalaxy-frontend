@@ -24,12 +24,7 @@
                   required
                 ></v-text-field>
               </div>
-              <v-btn
-                type="submit"
-                color="primary"
-                class="mt-3"
-                @click="login()"
-              >
+              <v-btn type="submit" color="primary" class="mt-3">
                 Prijavi se
               </v-btn>
             </form>
@@ -55,8 +50,8 @@ export default {
       rules: {
         email: (v) => !!(v || "").match(/@/) || "Unesi valjan email",
         password: (v) =>
-          !!(v || "").match(/^(?=.*[a-zA-Z])(?=.*\d).*$/) ||
-          "Lozinka mora sadržavati slova i brojeve",
+          !!(v || "").match(/^(?=.*[a-zA-Z])(?=.*\d).{4,}$/) ||
+          "Lozinka mora sadržavati slova, brojeve i biti minimalno 4 znakova",
         required: (v) => !!v || "Potrebno popuniti polje",
       },
     };
@@ -64,39 +59,29 @@ export default {
   methods: {
     async login() {
       try {
-        // Ispisivanje podataka koji se šalju
-        console.log("Šaljem podatke za prijavu:", {
-          email: this.email,
-          password: this.password,
-        });
-
-        const response = await axios.get("http://localhost:50000/login", {
-          params: {
+        const response = await axios.post(
+          "http://localhost:50000/api/login",
+          {
             email: this.email,
             password: this.password,
           },
-        });
-
-        console.log("Odgovor servera:", response.data);
-
-        // Spremanje tokena u localStorage
-        const token = response.data.token;
-        localStorage.setItem("token", token);
-
-        console.log("Token spremljen u localStorage:", response.data.token);
-
-        if (this.$route.name !== "welcome") {
-          this.$router.push({ name: "welcome" }); 
-        }
-      } catch (error) {
-        console.error(
-          "Greška pri prijavi:",
-          error.response?.data || "Unknown error"
+          {
+            headers: {
+              "Content-Type": "application/json", // JSON format
+            },
+          }
         );
 
-        // Prikazivanje greške korisniku
-        this.error =
-          "Login failed: " + (error.response?.data || "Unknown error");
+        const token = response.data.token;
+        localStorage.setItem("authToken", token);
+
+        const userType = JSON.parse(atob(token.split(".")[1])).userType;
+        localStorage.setItem("userType", response.data.userType);
+        this.$userState.isLoggedIn = true;
+        this.$userState.userType = response.data.userType;
+        this.$router.push(userType === "Prodavatelj" ? "/seller" : "/");
+      } catch (err) {
+        console.error("Greška pri prijavi", err);
       }
     },
   },

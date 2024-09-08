@@ -41,12 +41,14 @@
                   required
                 ></v-text-field>
               </div>
-              <v-btn
-                type="submit"
-                color="primary"
-                style="margin-top: 10px"
-                @click="registerUser()"
-              >
+              <div class="form-group">
+                <v-select
+                  label="Role"
+                  :items="users"
+                  v-model="userType"
+                ></v-select>
+              </div>
+              <v-btn type="submit" color="primary" style="margin-top: 10px">
                 Registriraj se
               </v-btn>
             </form>
@@ -75,37 +77,51 @@ export default {
         required: (v) => !!v || "Ovo polje je obavezno.",
         email: (v) => /.+@.+\..+/.test(v) || "Unesite ispravnu email adresu.",
         password: (v) =>
-          /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(v) ||
-          "Lozinka mora imati najmanje 8 znakova i sadržavati slova i brojeve.",
+          /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{4,}$/.test(v) ||
+          "Lozinka mora imati najmanje 4 znakova i sadržavati slova i brojeve.",
         confirmPassword: (v) =>
           v === this.password || "Lozinke se ne podudaraju.",
         username: (v) =>
           (v && v.length >= 3) || "Korisničko ime mora imati najmanje 3 znaka.",
+        userType: (v) => !!v || "Tip korisnika mora biti odabran.",
       },
+      users: ["Korisnik", "Prodavatelj"],
+      userType: "",
     };
   },
   methods: {
     async registerUser() {
-      const userData = {
-        username: this.username,
-        email: this.email,
-        password: this.password,
-      };
+      if (this.password !== this.confirmPassword) {
+        alert("Lozinke se ne podudaraju");
+        return;
+      }
 
       try {
         const response = await axios.post(
-          "http://localhost:50000/register",
-          userData
+          "http://localhost:50000/api/register",
+          {
+            username: this.username,
+            email: this.email,
+            password: this.password,
+            userType: this.userType,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json", // JSON format
+            },
+          }
         );
-        console.log("Odgovor sa servera:", response.data);
-
+        // Pohranjivanje tokena u localStorage
         const token = response.data.token;
-        localStorage.setItem("token", token); // Spremanje tokena
-        if (this.$route.name !== "welcome") {
-          this.$router.push({ name: "welcome" }); 
-        }
+        localStorage.setItem("authToken", token);
+
+        const userType = JSON.parse(atob(token.split(".")[1])).userType;
+        localStorage.setItem("userType", response.data.userType);
+        this.$userState.isLoggedIn = true;
+        this.$userState.userType = response.data.userType;
+        this.$router.push(userType === "Prodavatelj" ? "/seller" : "/");
       } catch (error) {
-        console.error("Greška prilikom registracije:", error.response.data);
+        console.error("Greška pri registraciji:", error);
       }
     },
   },
