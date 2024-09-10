@@ -104,6 +104,7 @@ export default {
             email: this.email,
             password: this.password,
             userType: this.userType,
+            userName: this.username,
           },
           {
             headers: {
@@ -117,8 +118,10 @@ export default {
 
         const userType = JSON.parse(atob(token.split(".")[1])).userType;
         localStorage.setItem("userType", response.data.userType);
+        localStorage.setItem("userName", response.data.username);
         this.$userState.isLoggedIn = true;
         this.$userState.userType = response.data.userType;
+        this.$userState.userName = response.data.username;
         this.$router.push(userType === "Prodavatelj" ? "/seller" : "/");
       } catch (error) {
         console.error("Greška pri registraciji:", error);

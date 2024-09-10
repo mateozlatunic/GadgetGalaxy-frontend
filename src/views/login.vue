@@ -40,6 +40,7 @@
 
 <script>
 import axios from "axios";
+import { loginUser } from '../main.js'
 
 export default {
   data() {
@@ -74,6 +75,7 @@ export default {
 
         const token = response.data.token;
         localStorage.setItem("authToken", token);
+        loginUser(token);
 
         const userType = JSON.parse(atob(token.split(".")[1])).userType;
         localStorage.setItem("userType", response.data.userType);
