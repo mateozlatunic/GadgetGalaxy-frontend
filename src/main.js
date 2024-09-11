@@ -37,7 +37,7 @@ function userInfoFromToken(token) {
   userState.userName = payload.username;  // Postavljanje username-a u userState
 }
 
-// Koristi setUserInfoFromToken nakon prijave
+// setUserInfoFromToken() nakon prijave
 export function loginUser(token) {
   userInfoFromToken(token);
 }

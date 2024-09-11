@@ -4,6 +4,7 @@ import homepage from "../views/homepage.vue";
 import login from "../views/login.vue";
 import register from "../views/register.vue";
 import seller from "../views/seller.vue";
+import product from "../views/auctionGoods.vue"
 
 Vue.use(VueRouter);
 
@@ -37,6 +38,11 @@ const routes = [
       }
     },
   },
+  {
+    path: "/product",
+    name: "product",
+    component: product,
+  }
 ];
 
 const router = new VueRouter({

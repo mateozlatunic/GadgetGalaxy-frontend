@@ -14,7 +14,7 @@
       </div>
 
       <div v-if="$userState.isLoggedIn">
-        &nbsp; Status | {{ $userState.userName }} &nbsp;
+        &nbsp; {{ $userState.userType }} | {{ $userState.userName }} &nbsp;
       </div>
 
       <v-btn v-if="!$userState.isLoggedIn" text @click="$router.push('/login')">Login</v-btn>
