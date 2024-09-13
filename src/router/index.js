@@ -4,7 +4,8 @@ import homepage from "../views/homepage.vue";
 import login from "../views/login.vue";
 import register from "../views/register.vue";
 import seller from "../views/seller.vue";
-import product from "../views/auctionGoods.vue"
+import product from "../views/auctionGoods.vue";
+import profile from "../views/profile.vue";
 
 Vue.use(VueRouter);
 
@@ -23,6 +24,19 @@ const routes = [
     path: "/register",
     name: "register",
     component: register,
+  },
+  {
+    path: "/profile",
+    name: "profile",
+    component: profile,
+    beforeEnter: (to, from, next) => {
+      const token = localStorage.getItem("authToken");  // Provjera naziva za token
+      if (token) {
+        next();
+      } else {
+        next("/login");
+      }
+    },
   },
   {
     path: "/seller",

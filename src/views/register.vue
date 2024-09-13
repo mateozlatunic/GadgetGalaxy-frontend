@@ -2,14 +2,14 @@
   <div class="container mt-5">
     <div class="row justify-content-center">
       <div class="col-md-6">
-        <div class="card">
+        <div class="card" style="margin-top: 50px; background-color: lightgrey">
           <div class="card-header">Registracija</div>
           <div class="card-body">
             <form @submit.prevent="registerUser">
               <div class="form-group">
                 <v-text-field
                   v-model="username"
-                  :rules="[rules.required, rules.username]"
+                  :rules="[rules.required, rules.userName]"
                   label="Korisničko ime"
                   required
                 ></v-text-field>
@@ -81,7 +81,7 @@ export default {
           "Lozinka mora imati najmanje 4 znakova i sadržavati slova i brojeve.",
         confirmPassword: (v) =>
           v === this.password || "Lozinke se ne podudaraju.",
-        username: (v) =>
+        userName: (v) =>
           (v && v.length >= 3) || "Korisničko ime mora imati najmanje 3 znaka.",
         userType: (v) => !!v || "Tip korisnika mora biti odabran.",
       },
@@ -104,7 +104,6 @@ export default {
             email: this.email,
             password: this.password,
             userType: this.userType,
-            userName: this.username,
           },
           {
             headers: {
@@ -118,10 +117,19 @@ export default {
 
         const userType = JSON.parse(atob(token.split(".")[1])).userType;
         localStorage.setItem("userType", response.data.userType);
-        localStorage.setItem("userName", response.data.username);
+        localStorage.setItem("username", response.data.username);
         this.$userState.isLoggedIn = true;
         this.$userState.userType = response.data.userType;
         this.$userState.userName = response.data.username;
+
+        localStorage.setItem("authToken", token);
+        localStorage.setItem("username", this.username);
+        localStorage.setItem("userType", this.userType);
+
+        this.$userState.isLoggedIn = true;
+        this.$userState.userName = this.username;
+        this.$userState.userType = this.userType;
+
         this.$router.push(userType === "Prodavatelj" ? "/seller" : "/");
       } catch (error) {
         console.error("Greška pri registraciji:", error);

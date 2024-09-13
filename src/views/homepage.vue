@@ -23,9 +23,9 @@
     </v-container>
 
     <!-- Product Cards -->
-    <v-row>
+    <v-row style="margin-bottom: 30px; margin-top: 30px;">
       <v-col v-for="(product, index) in filteredProducts" :key="index" class="d-flex child-flex mt-5" cols="4">
-        <v-card class="mx-auto" max-width="400">
+        <v-card class="mx-auto" max-width="400" style="background-color: lightgrey">
           <v-img
             class="align-end text-white"
             height="350"

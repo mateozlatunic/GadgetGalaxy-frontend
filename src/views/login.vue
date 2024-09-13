@@ -1,8 +1,8 @@
 <template>
-  <div class="container mt-5">
+  <div class="container mt-5" >
     <div class="row justify-content-center">
       <div class="col-md-6">
-        <div class="card">
+        <div class="card" style="margin-top: 50px; background-color:lightgrey">
           <div class="card-header">Login</div>
           <div class="card-body">
             <form @submit.prevent="login">
