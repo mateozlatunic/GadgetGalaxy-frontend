@@ -8,17 +8,17 @@
           </v-card-title>
 
           <v-card-text>
-            <v-form @submit.prevent="updateProfile" ref="form">
+            <v-form @submit.prevent="submitForm" ref="form">
               <v-text-field
                 v-model="username"
-                :rules="[rules.usernameRule, rules.required]"
+                :rules="[rules.required, rules.usernameRule]"
                 label="Korisničko ime"
                 required
               ></v-text-field>
 
               <v-text-field
                 v-model="email"
-                :rules="[rules.emailRule, rules.required]"
+                :rules="[rules.required, rules.emailRule]"
                 label="Email"
                 required
               ></v-text-field>
@@ -26,7 +26,7 @@
               <!-- Unos za staru lozinku -->
               <v-text-field
                 v-model="oldPassword"
-                :rules="[rules.oldPasswordRule, rules.required]"
+                :rules="[rules.required, rules.oldPasswordRule]"
                 label="Stara lozinka"
                 type="password"
                 required
@@ -34,12 +34,11 @@
 
               <v-text-field
                 v-model="password"
-                :rules="[rules.newPasswordRule, rules.required]"
+                :rules="[rules.required, rules.newPasswordRule]"
                 label="Nova lozinka"
                 type="password"
               ></v-text-field>
 
-              <!-- Red za gumbe -->
               <v-row justify="end" class="mt-4">
                 <v-col cols="auto">
                   <v-btn
@@ -74,14 +73,15 @@ export default {
     return {
       username: "",
       email: "",
-      oldPassword: "", 
+      oldPassword: "",
       password: "",
       rules: {
         required: (v) => !!v || "Potrebno popuniti polje",
         usernameRule: (v) => !!v || "Korisnicko ime je obavezno",
         emailRule: (v) => /.+@.+\..+/.test(v) || "Email mora biti validan",
         oldPasswordRule: (v) => !!v || "Stara lozinka je obavezna",
-        newPasswordRule: (v) => v.length >= 4 || "Nova lozinka mora imati najmanje 4 znaka",
+        newPasswordRule: (v) =>
+          v.length >= 4 || "Nova lozinka mora imati najmanje 4 znaka",
       },
     };
   },
@@ -101,7 +101,7 @@ export default {
         token,
         username: this.username,
         email: this.email,
-        oldPassword: this.oldPassword, // Dodavanje stare lozinke
+        oldPassword: this.oldPassword,
         password: this.password,
       };
 
@@ -115,11 +115,21 @@ export default {
           }
         );
         if (response.ok) {
+          const updatedUser = await response.json();
+          // Ažuriranje globalnog userState-a
+          if (this.$root.userState) {
+            this.$root.userState.userName = updatedUser.username;
+          } else {
+            console.error("userState is not defined");
+          }
+
           alert("Podaci uspješno ažurirani");
-          this.$router.push("/seller");
+
+          this.$router.push(this.$userState.userType === "Prodavatelj" ? "/seller" : "/");
+
         } else {
-          const data = await response.json();
-          alert(data.message || "Greška pri ažuriranju podataka");
+          const data = await response.text();
+          alert(data || "Greška pri ažuriranju podataka");
         }
       } catch (error) {
         console.error("Greška:", error);
