@@ -98,7 +98,7 @@ export default {
 
       try {
         const response = await axios.post(
-          "https://gadgetgalaxy-backend.onrender.com/register",
+          "https://gadgetgalaxy-backend.onrender.com/api/register",
           {
             username: this.username,
             email: this.email,

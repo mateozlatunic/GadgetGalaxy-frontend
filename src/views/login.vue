@@ -61,7 +61,7 @@ export default {
     async login() {
       try {
         const response = await axios.post(
-          "https://gadgetgalaxy-backend.onrender.com/login",
+          "https://gadgetgalaxy-backend.onrender.com/api/login",
           {
             email: this.email,
             password: this.password,
