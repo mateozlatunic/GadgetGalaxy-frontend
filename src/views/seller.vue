@@ -195,7 +195,7 @@ export default {
       // Provjera validacije prije slanja
       if (this.$refs.form.validate()) {
         try {
-          const response = await fetch("http://localhost:50000/api/add_product", {
+          const response = await fetch("https://gadgetgalaxy-backend.onrender.com/add_product", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

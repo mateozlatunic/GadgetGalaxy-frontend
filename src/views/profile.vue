@@ -107,7 +107,7 @@ export default {
 
       try {
         const response = await fetch(
-          "http://localhost:50000/api/update_profile",
+          "https://gadgetgalaxy-backend.onrender.com/update_profile",
           {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
@@ -141,7 +141,7 @@ export default {
 
       try {
         const response = await fetch(
-          "http://localhost:50000/api/delete_account",
+          "https://gadgetgalaxy-backend.onrender.com/delete_account",
           {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },

@@ -167,7 +167,7 @@ export default {
       const productId = this.$route.params.id;
       try {
         const response = await fetch(
-          `http://localhost:50000/api/product/${productId}`
+          `https://gadgetgalaxy-backend.onrender.com/product/${productId}`
         );
         const data = await response.json();
         this.product = data;
@@ -213,7 +213,7 @@ export default {
     async saveCredentials() {
       try {
         const response = await fetch(
-          "http://localhost:50000/api/save_credentials",
+          "https://gadgetgalaxy-backend.onrender.com/save_credentials",
           {
             method: "POST",
             headers: {

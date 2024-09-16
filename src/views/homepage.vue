@@ -100,7 +100,7 @@ export default {
   methods: {
     async fetchProducts() {
       try {
-        const response = await fetch("http://localhost:50000/api/products");
+        const response = await fetch("https://gadgetgalaxy-backend.onrender.com/products");
         const data = await response.json();
         this.products = data;
 
