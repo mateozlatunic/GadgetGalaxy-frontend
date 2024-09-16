@@ -3,7 +3,7 @@
 
 #
 
-#### Vercel: [Launch App](https://gadgetgalaxy-frontend.onrender.com/)
+#### Render.com: [Launch App](https://gadgetgalaxy-frontend.onrender.com/)
 
 #
 
